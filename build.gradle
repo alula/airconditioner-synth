@@ -1,0 +1,23 @@
+plugins {
+    id 'java'
+}
+
+group 'io.github.alula'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 11
+
+repositories {
+    jcenter()
+    mavenCentral()
+    maven { url 'https://jitpack.io' }
+}
+
+dependencies {
+    compile 'ch.qos.logback:logback-classic:1.3.0-alpha5'
+    compile 'com.mewna:catnip:2.0.1'
+    compile 'moe.kyokobot.koe:core:1.0.0'
+    compile 'club.minnced:opus-java-api:1.0.5'
+    compile 'club.minnced:opus-java-natives:1.0.5'
+    compileOnly 'net.java.dev.jna:jna:4.4.0'
+}
