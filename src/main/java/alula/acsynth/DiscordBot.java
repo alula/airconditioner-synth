@@ -113,6 +113,28 @@ public class DiscordBot {
                     }
                 });
 
+
+        catnip.observable(DiscordEvent.MESSAGE_CREATE)
+                .filter(message -> message.guildIdAsLong() != 0
+                        && !message.author().bot()
+                        && message.content().startsWith(prefix + "stop"))
+                .subscribe(message -> {
+                    var voiceState = message.guild().voiceStates().getById(message.author().idAsLong());
+                    if (voiceState == null) {
+                        message.channel().sendMessage("You need to be in a voice channel!");
+                        return;
+                    }
+
+                    message.channel().sendMessage("Stopping air conditioning...");
+                    var cond = getAirConditionerForGuild(message.guildIdAsLong());
+                    cond.setBeep(500);
+                    cond.setSpeed(0.0f);
+                    Thread.sleep(5000);
+
+                    airConditioners.remove(message.guildIdAsLong());
+                    catnip.closeVoiceConnection(message.guildIdAsLong());
+                });
+
         catnip.observable(DiscordEvent.MESSAGE_CREATE)
                 .filter(message -> message.guildIdAsLong() != 0
                         && !message.author().bot()
@@ -138,7 +160,7 @@ public class DiscordBot {
                         var airConditioner = getAirConditionerForGuild(voiceState.guildIdAsLong());
                         conn.setAudioSender(new AudioSender(conn, airConditioner));
                         connect(channel);
-                        message.channel().sendMessage("Joined channel `" + channel.name() + "`!");
+                        message.channel().sendMessage("Started air conditioning in channel `" + channel.name() + "`!");
                     }
                 });
 
